@@ -1,21 +1,33 @@
-const express =  require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-
-const userRouter = require('./routes/user');
-
+const express = require("express");
 const app = express();
-app.use(express.json());
-
+const dotenv = require("dotenv");
 dotenv.config();
+//connection or setup for mongodb
+const mongoose = require("mongoose");
 
-app.use('/api/node' , userRouter);
+//const userRoute = require("./routes/user");
+const authRoute = require("./routes/auth");
+const cartRoute = require("./routes/cart");
 
-mongoose.connect(process.env.mongo_uri,{
+mongoose.connect(process.env.MONGO_URL)
+.then(()=> console.log("Database connection is sucessfully!"))
+.catch((err)=>{
 
-}).then(() => console.log("Database connected successfully"))
-.catch((err) => console.log("Database connection failed" , err));
+    console.log(err)
+});
 
-app.listen(process.env.PORT || 7000 , () => {
-    console.log("Serevre runing on ${PORT}");
+app.use(express.json());
+app.use("/api/auth",authRoute);
+app.use("/api/cart",cartRoute);
+//app.use("/api/users", userRoute);
+/*app.get("/api/user",()=>{
+
+    console.log("Dummy Api endpoint is working now !");
+});
+*/
+
+
+app.listen(process.env.PORT||7000,()=>{
+
+    console.log("Nodejs setup is sucessfully dn!");
 });
